@@ -22,11 +22,11 @@ await connectDB() // The await ensures the server waits for the database connect
 await connectCloudinary();
 //allow multiple origins  specifies which frontend URLs are allowed to make requests to this backend, crucial for security in a cross-origin setup.
 const allowedOrigins = ['http://localhost:5173','https://greencart-coral.vercel.app'] //url that are allowed to access our backend
+
+
 app.post('/stripe',express.raw({type: 'application/json'}),stripeWebhooks)
+
 //MiddleWare Configuration
-
-
- 
 app.use(cookieParser());//Global middleware to parse cookies from request headers
 
 app.use(cors({origin: allowedOrigins,credentials:true}));
