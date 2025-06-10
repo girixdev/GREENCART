@@ -24,13 +24,27 @@ await connectCloudinary();
 const allowedOrigins = ['http://localhost:5173',
     'https://greencart-coral.vercel.app'] //url that are allowed to access our backend
 
+app.use(cors({origin: allowedOrigins,credentials:true}));
+
+app.use(cors({
+  origin: function(origin, callback) {
+    // Allow requests with no origin (like mobile apps, curl, etc.)
+    if (!origin) return callback(null, true);
+    if (allowedOrigins.includes(origin)) {
+      return callback(null, true);
+    } else {
+      return callback(new Error('Not allowed by CORS'));
+    }
+  },
+  credentials: true
+}));
+
 
 app.post('/stripe',express.raw({type: 'application/json'}),stripeWebhooks)
 
 //MiddleWare Configuration
 app.use(cookieParser());//Global middleware to parse cookies from request headers
 
-app.use(cors({origin: allowedOrigins,credentials:true}));
 
 app.get('/',(req,res)=>{
     res.send("API WORKING");
