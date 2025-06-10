@@ -21,7 +21,7 @@ app.use(express.json()); //all the req coming to this server will be passed usin
 await connectDB() // The await ensures the server waits for the database connection to be established before proceeding (which is good practice for critical services).
 await connectCloudinary();
 //allow multiple origins  specifies which frontend URLs are allowed to make requests to this backend, crucial for security in a cross-origin setup.
-const allowedOrigins = ['http://localhost:5173'] //url that are allowed to access our backend
+const allowedOrigins = ['http://localhost:5173','https://greencart-coral.vercel.app'] //url that are allowed to access our backend
 app.post('/stripe',express.raw({type: 'application/json'}),stripeWebhooks)
 //MiddleWare Configuration
 
