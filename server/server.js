@@ -21,15 +21,34 @@ app.use(express.json()); //all the req coming to this server will be passed usin
 await connectDB() // The await ensures the server waits for the database connection to be established before proceeding (which is good practice for critical services).
 await connectCloudinary();
 //allow multiple origins  specifies which frontend URLs are allowed to make requests to this backend, crucial for security in a cross-origin setup.
-const allowedOrigins = ['http://localhost:5173','https://greencart-coral.vercel.app'] //url that are allowed to access our backend
-
-
-app.post('/stripe',express.raw({type: 'application/json'}),stripeWebhooks)
+const allowedOrigins = [
+  'http://localhost:5173',
+  'https://greencart-coral.vercel.app'
+];
 
 //MiddleWare Configuration
 app.use(cookieParser());//Global middleware to parse cookies from request headers
 
-app.use(cors({origin: allowedOrigins,credentials:true}));
+app.use(cors({
+  origin: allowedOrigins,
+  credentials: true,
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization']
+}));
+
+app.options('*', cors({
+  origin: allowedOrigins,
+  credentials: true,
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization']
+}));
+app.use((req, res, next) => {
+  res.header('Access-Control-Allow-Origin', 'https://greencart-coral.vercel.app');
+  res.header('Access-Control-Allow-Credentials', 'true');
+  next();
+});
+
+app.post('/stripe',express.raw({type: 'application/json'}),stripeWebhooks)
 
 app.get('/',(req,res)=>{
     res.send("API WORKING");
