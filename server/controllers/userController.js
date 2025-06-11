@@ -20,12 +20,19 @@ export const register = async(req,res)=>{
         const user =await User.create({name,email,password:hashedPassword})
 
         const token = jwt.sign({id:user._id},process.env.JWT_SECRET,{expiresIn:'7d'});
-        res.cookie('token',token,{
+        // res.cookie('token',token,{
+        //     httpOnly:true, //prevent  client-side Javascript to access cookie
+        //     secure: process.env.NODE_ENV === 'production', //use secure cookie in production
+        //     sameSite : process.env.NODE_ENV === 'production'?'none':'strict', //CSRF protection
+        //     maxAge : 7*24*60*60*1000, //cookie expiration time
+            
+        // })
+         res.cookie('token',token,{
             httpOnly:true, //prevent  client-side Javascript to access cookie
-            secure: process.env.NODE_ENV === 'production', //use secure cookie in production
-            sameSite : process.env.NODE_ENV === 'production'?'none':'strict', //CSRF protection
+            secure: true, //use secure cookie in production
+            sameSite : 'None', //CSRF protection
             maxAge : 7*24*60*60*1000, //cookie expiration time
-
+            
         })
 
         return res.json({success:true,user :{email:user.email,name:user.name}})
@@ -55,11 +62,21 @@ export const login = async(req,res)=>{
             return res.json({success:false,message:"Invalid Email Or Password"});
         }
         const token = jwt.sign({id:user._id},process.env.JWT_SECRET,{expiresIn:'7d'});
-        res.cookie('token',token,{
+        // res.cookie('token',token,{
+        //     httpOnly:true, //prevent  client-side Javascript to access cookie
+        //     secure: process.env.NODE_ENV === 'production', //use secure cookie in production
+        //     //secure: true, //use secure cookie in production
+        //     sameSite : process.env.NODE_ENV === 'production'?'none':'strict', //CSRF protection
+        //     //sameSite :'None' ,//CSRF protection
+
+        //     maxAge : 7*24*60*60*1000, //cookie expiration time
+
+        // })
+            res.cookie('token',token,{
             httpOnly:true, //prevent  client-side Javascript to access cookie
-            secure: process.env.NODE_ENV === 'production', //use secure cookie in production
+            secure: true, //use secure cookie in production
             //secure: true, //use secure cookie in production
-            sameSite : process.env.NODE_ENV === 'production'?'none':'strict', //CSRF protection
+            sameSite:'None', //CSRF protection
             //sameSite :'None' ,//CSRF protection
 
             maxAge : 7*24*60*60*1000, //cookie expiration time

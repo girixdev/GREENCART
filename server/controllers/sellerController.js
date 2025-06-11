@@ -9,10 +9,15 @@ export const sellerLogin =  async (req,res)=>{
         && email === process.env.SELLER_EMAIL){
             const token = jwt.sign({email},process.env.JWT_SECRET,
                 {expiresIn: '7d'})
-             res.cookie('sellerToken',token,{
+            //  res.cookie('sellerToken',token,{
+            // httpOnly:true, //prevent  client-side Javascript to access cookie
+            // secure: process.env.NODE_ENV === 'production', //use secure cookie in production
+            // sameSite : process.env.NODE_ENV === 'production'?'none':'strict', //CSRF protection
+            // maxAge : 7*24*60*60*1000, //cookie expiration time
+            res.cookie('sellerToken',token,{
             httpOnly:true, //prevent  client-side Javascript to access cookie
-            secure: process.env.NODE_ENV === 'production', //use secure cookie in production
-            sameSite : process.env.NODE_ENV === 'production'?'none':'strict', //CSRF protection
+            secure: true, //use secure cookie in production
+            sameSite : 'None', //CSRF protection
             maxAge : 7*24*60*60*1000, //cookie expiration time
         });
 
@@ -43,11 +48,17 @@ export const isSellerAuth = async (req,res)=>{
 
 export const sellerLogout = async(req,res)=>{
     try {
-        res.clearCookie('SellerToken',{
-            httpOnly:true,
-            secure: process.env.NODE_ENV === 'production', //use secure cookie in production
-            sameSite : process.env.NODE_ENV === 'production'?'none':'strict', //CSRF protection
-        })
+        // res.clearCookie('sellerToken',{
+        //     httpOnly:true,
+        //     secure: process.env.NODE_ENV === 'production', //use secure cookie in production
+        //     sameSite : process.env.NODE_ENV === 'production'?'none':'strict', //CSRF protection
+        // })
+            res.clearCookie('sellerToken', {
+            httpOnly: true,
+            secure: true,
+            sameSite: 'None',
+            });
+
         res.json({success:true,message:"Logged Out"});
         return 
     } catch (error) {
